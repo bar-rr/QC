@@ -40,3 +40,7 @@ See [`docs/VISION.md`](docs/VISION.md) for the full manifesto (Turkish).
 ## Topics
 
 `decentralized` `quantum-communication` `p2p` `zero-server` `edge-computing` `local-first` `network-architecture` `privacy`
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE) — any modified version, including one offered over a network, must remain open source under the same license.
