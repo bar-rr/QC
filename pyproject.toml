@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qc"
+version = "0.1.0"
+description = "Zero-intermediary, local-first, transport-agnostic encrypted messaging"
+readme = "README.md"
+license = "AGPL-3.0-only"
+requires-python = ">=3.10"
+dependencies = ["cryptography>=42"]
+
+[project.scripts]
+qc = "qc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["qc*"]
