@@ -1,0 +1,226 @@
+{
+ "normal": {
+  "A": {
+   "delivered": 0.5495561024169472,
+   "within_1h": 0.19593894028256678,
+   "within_6h": 0.45171003938685034,
+   "median_latency_min": 105.16666666666667,
+   "alive_day3": 0.48133333333333334,
+   "alive_day7": 0.0,
+   "radio_wh_per_phone_day": 1.0018340476190477
+  },
+  "C": {
+   "delivered": 0.671693485654357,
+   "within_1h": 0.1505631463730929,
+   "within_6h": 0.4656489774419215,
+   "median_latency_min": 182.91666666666666,
+   "alive_day3": 1.0,
+   "alive_day7": 0.7159999999999999,
+   "radio_wh_per_phone_day": 0.1476296527777777
+  },
+  "F1": {
+   "delivered": 0.673852809541013,
+   "within_1h": 0.14906783220843803,
+   "within_6h": 0.46929347654097037,
+   "median_latency_min": 183.16666666666666,
+   "alive_day3": 0.9986666666666667,
+   "alive_day7": 0.6893333333333334,
+   "radio_wh_per_phone_day": 0.1875619883156967
+  },
+  "F2": {
+   "delivered": 0.6653656638267723,
+   "within_1h": 0.15299405281620093,
+   "within_6h": 0.46649991564357657,
+   "median_latency_min": 177.66666666666666,
+   "alive_day3": 1.0,
+   "alive_day7": 0.702,
+   "radio_wh_per_phone_day": 0.16776164140211627
+  },
+  "F3": {
+   "delivered": 0.6801611753018415,
+   "within_1h": 0.17937942832422707,
+   "within_6h": 0.4960424901433478,
+   "median_latency_min": 155.33333333333334,
+   "alive_day3": 0.9819999999999999,
+   "alive_day7": 0.638,
+   "radio_wh_per_phone_day": 0.2790349949735445
+  },
+  "F13": {
+   "delivered": 0.6758099568557605,
+   "within_1h": 0.181275512354898,
+   "within_6h": 0.4984045702817963,
+   "median_latency_min": 150.16666666666666,
+   "alive_day3": 0.9773333333333333,
+   "alive_day7": 0.6166666666666667,
+   "radio_wh_per_phone_day": 0.3095266934303367
+  }
+ },
+ "few people (250)": {
+  "A": {
+   "delivered": 0.5311132907301022,
+   "within_1h": 0.1260728491727774,
+   "within_6h": 0.40189082713229857,
+   "median_latency_min": 161.83333333333334,
+   "alive_day3": 0.4626666666666666,
+   "alive_day7": 0.0,
+   "radio_wh_per_phone_day": 0.981584126984127
+  },
+  "C": {
+   "delivered": 0.6591248344724489,
+   "within_1h": 0.08058113857900023,
+   "within_6h": 0.3552938033614903,
+   "median_latency_min": 319.0833333333333,
+   "alive_day3": 1.0,
+   "alive_day7": 0.7200000000000001,
+   "radio_wh_per_phone_day": 0.14772579453262782
+  },
+  "F1": {
+   "delivered": 0.6608702119659793,
+   "within_1h": 0.08275627862692263,
+   "within_6h": 0.35584418631110176,
+   "median_latency_min": 320.3333333333333,
+   "alive_day3": 0.9986666666666667,
+   "alive_day7": 0.6746666666666666,
+   "radio_wh_per_phone_day": 0.20663121031746015
+  },
+  "F2": {
+   "delivered": 0.6497443794424949,
+   "within_1h": 0.08382016855426698,
+   "within_6h": 0.3476694453458638,
+   "median_latency_min": 324.5833333333333,
+   "alive_day3": 1.0,
+   "alive_day7": 0.6999999999999998,
+   "radio_wh_per_phone_day": 0.16942156490299845
+  },
+  "F3": {
+   "delivered": 0.6784097228079263,
+   "within_1h": 0.12393516294662625,
+   "within_6h": 0.43476067475547864,
+   "median_latency_min": 225.33333333333334,
+   "alive_day3": 0.9853333333333333,
+   "alive_day7": 0.6106666666666666,
+   "radio_wh_per_phone_day": 0.28168188492064544
+  },
+  "F13": {
+   "delivered": 0.6753781012407455,
+   "within_1h": 0.12588899903110404,
+   "within_6h": 0.4335010787111741,
+   "median_latency_min": 223.0,
+   "alive_day3": 0.9786666666666667,
+   "alive_day7": 0.5773333333333334,
+   "radio_wh_per_phone_day": 0.3273417925044133
+  }
+ },
+ "short range (30 m)": {
+  "A": {
+   "delivered": 0.4687162097329382,
+   "within_1h": 0.06941501077581923,
+   "within_6h": 0.29950542003764563,
+   "median_latency_min": 246.25,
+   "alive_day3": 0.48133333333333334,
+   "alive_day7": 0.0,
+   "radio_wh_per_phone_day": 1.0018340476190477
+  },
+  "C": {
+   "delivered": 0.5462681886733994,
+   "within_1h": 0.027937766545466425,
+   "within_6h": 0.1815929025798869,
+   "median_latency_min": 617.5833333333334,
+   "alive_day3": 1.0,
+   "alive_day7": 0.7120000000000001,
+   "radio_wh_per_phone_day": 0.15058523368606708
+  },
+  "F1": {
+   "delivered": 0.5468422118589112,
+   "within_1h": 0.028940413760111763,
+   "within_6h": 0.18194458562974933,
+   "median_latency_min": 617.25,
+   "alive_day3": 0.9979999999999999,
+   "alive_day7": 0.6606666666666667,
+   "radio_wh_per_phone_day": 0.22788970039682557
+  },
+  "F2": {
+   "delivered": 0.538536018923335,
+   "within_1h": 0.02840107172008984,
+   "within_6h": 0.18114176135363783,
+   "median_latency_min": 610.75,
+   "alive_day3": 1.0,
+   "alive_day7": 0.6986666666666667,
+   "radio_wh_per_phone_day": 0.17101311036155176
+  },
+  "F3": {
+   "delivered": 0.6232854380209046,
+   "within_1h": 0.06444247569992892,
+   "within_6h": 0.30228076532420456,
+   "median_latency_min": 380.4166666666667,
+   "alive_day3": 0.9819999999999999,
+   "alive_day7": 0.6373333333333333,
+   "radio_wh_per_phone_day": 0.28004174356261147
+  },
+  "F13": {
+   "delivered": 0.6167935725378549,
+   "within_1h": 0.06503595387716844,
+   "within_6h": 0.30072872433222414,
+   "median_latency_min": 375.1666666666667,
+   "alive_day3": 0.9739999999999999,
+   "alive_day7": 0.6,
+   "radio_wh_per_phone_day": 0.33935597407407947
+  }
+ },
+ "both": {
+  "A": {
+   "delivered": 0.4603045639718167,
+   "within_1h": 0.05054904104881474,
+   "within_6h": 0.2699278988192266,
+   "median_latency_min": 284.5,
+   "alive_day3": 0.4626666666666666,
+   "alive_day7": 0.0,
+   "radio_wh_per_phone_day": 0.981584126984127
+  },
+  "C": {
+   "delivered": 0.534534147602345,
+   "within_1h": 0.016803259896030303,
+   "within_6h": 0.11542626495577561,
+   "median_latency_min": 897.75,
+   "alive_day3": 1.0,
+   "alive_day7": 0.7120000000000001,
+   "radio_wh_per_phone_day": 0.15252336860670193
+  },
+  "F1": {
+   "delivered": 0.5348068991719384,
+   "within_1h": 0.015980967854583694,
+   "within_6h": 0.12229011919538325,
+   "median_latency_min": 824.9166666666666,
+   "alive_day3": 0.9973333333333333,
+   "alive_day7": 0.636,
+   "radio_wh_per_phone_day": 0.25903948500881824
+  },
+  "F2": {
+   "delivered": 0.5221187837860645,
+   "within_1h": 0.015762198090973886,
+   "within_6h": 0.11104355461695158,
+   "median_latency_min": 890.5833333333334,
+   "alive_day3": 1.0,
+   "alive_day7": 0.6933333333333334,
+   "radio_wh_per_phone_day": 0.17455725881834197
+  },
+  "F3": {
+   "delivered": 0.6271895267670553,
+   "within_1h": 0.05163326982387025,
+   "within_6h": 0.28062435302241245,
+   "median_latency_min": 423.9166666666667,
+   "alive_day3": 0.9866666666666667,
+   "alive_day7": 0.6106666666666666,
+   "radio_wh_per_phone_day": 0.28422505634919154
+  },
+  "F13": {
+   "delivered": 0.6161984765757302,
+   "within_1h": 0.04955909402657469,
+   "within_6h": 0.2792530847712353,
+   "median_latency_min": 417.8333333333333,
+   "alive_day3": 0.9773333333333333,
+   "alive_day7": 0.5466666666666667,
+   "radio_wh_per_phone_day": 0.3685320067019257
+  }
+ }
+}
