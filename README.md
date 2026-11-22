@@ -35,18 +35,21 @@ See [`docs/VISION.md`](docs/VISION.md) for the full manifesto (Turkish).
 
 ## What makes QC different
 
-There are many P2P messengers. Most of them still assume *the internet*: a DHT, bootstrap servers, relays, Tor, or at least an uplink. QC starts from the opposite assumption — **the infrastructure may not exist at all**.
+Phone-to-phone mesh messengers already exist — [Bitchat](https://github.com/permissionlesstech/bitchat), [Berty](https://github.com/berty/berty), [Briar](https://briarproject.org) — and [Reticulum](https://github.com/markqvist/Reticulum) is a mature medium-independent network stack. They work without the internet. What they share is an assumption: **radios stay on all the time** so that sender, relays and recipient happen to be awake at the same moment.
 
-| | Typical P2P messenger | QC |
-|---|---|---|
-| **Unit of communication** | A live connection | A self-contained *sealed envelope* that can travel over any medium |
-| **Transport** | Internet (often + relays / bootstrap nodes) | Pluggable: LAN today, a USB stick or any shared folder today; radio (LoRa), Bluetooth, serial next |
-| **Needs internet?** | Usually | Never — a local network or a USB stick is enough |
-| **Footprint** | Electron apps, hundreds of MB | ~800 lines of Python, one dependency, runs on old hardware and Raspberry Pi |
-| **Account / registry** | Phone number, username server, or DHT | None — a node *is* its key pair; contacts are exchanged as a one-line card |
-| **Quantum** | Rarely considered | Roadmap: hybrid post-quantum key exchange (X25519 + ML-KEM) |
+In a real collapse — no grid, no cell network, no internet, for days — **energy is the scarcest resource**, and always-on radios drain phones exactly when they are alone and need to last longest.
 
-The core idea: **the message, not the network, carries the security.** Because envelopes are end-to-end encrypted and signed, *anything* can carry them — a stranger's USB stick, an untrusted sync folder, a radio link — and the carrier learns nothing but the recipient id.
+QC's approach is **energy-first, scheduled-rendezvous mesh**:
+
+- **Everyone wakes up together.** Phones keep a shared schedule (phone clock, GPS time when available, corrected peer-to-peer) and turn the radio on only for short, synchronized windows — e.g. ~30 s every 10 minutes. Outside those windows the radio is off.
+- **Messages never go into the void.** A message waits for the next shared window, when nearby phones are known to be awake.
+- **Battery-aware, nested schedule.** As battery drops, a phone wakes less often (every 10 → 30 → 60 min), but the hourly windows are shared by everyone, so no phone falls off the network.
+- **Volunteer carriers.** Users with a power source (power bank, car battery, solar) can opt in to let their phone stay on as a mailbox that stores and forwards others' encrypted messages.
+- **Multi-day delivery.** Store-and-forward with retention measured in days, not hours.
+
+Trade-off: delivery is not instant — each hop may wait up to one window. In a collapsed system, a message that arrives in 30 minutes beats one that never arrives because the battery died.
+
+This is a design goal, not yet implemented or measured. See [`docs/DESIGN.md`](docs/DESIGN.md) (Turkish) for details.
 
 ## Prototype (v0.1)
 
@@ -103,15 +106,17 @@ python -m unittest discover -s tests -v
 - [x] Sealed envelopes (E2E encryption + signatures)
 - [x] LAN transport with automatic discovery
 - [x] Folder / USB transport (sneakernet)
-- [ ] Store-and-forward: nodes carry envelopes for others (mesh without internet)
-- [ ] LoRa / Bluetooth / serial transports
+- [ ] Simulation: scheduled-rendezvous vs always-on (delivery rate, latency, energy)
+- [ ] Android app: Bluetooth LE with synchronized wake windows
+- [ ] Volunteer carrier mode and multi-day store-and-forward
+- [ ] Real-device energy measurements
+- [ ] Optional Wi-Fi Aware / Wi-Fi Direct for large data
+- [ ] iOS support (background wake is restricted)
 - [ ] Hybrid post-quantum key exchange (X25519 + ML-KEM)
-- [ ] Double-ratchet forward secrecy
-- [ ] Optional local AI assistant running fully on-device
 
 ## Status
 
-🚧 Early stage — working prototype (v0.1).
+🚧 Early stage — desktop prototype (v0.1) of the encryption and transport layer; the energy-first mesh is in design.
 
 ## Topics
 
