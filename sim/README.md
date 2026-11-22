@@ -61,6 +61,39 @@ Messages delivered, by the day they were sent:
 
 The scheduled design delivers more in every variation. Its weak spot is **sparse networks** (fewer people, shorter range): latency grows to many hours, because short windows give walkers fewer chances to meet. Possible fixes to explore: longer windows when no neighbours are seen, or more frequent windows for phones that are moving.
 
+## Sparse networks: which fix works?
+
+```bash
+python -m sim.sparse     # 4 settings × 6 variants × 3 seeds, 30 s tick (~10 min)
+```
+
+![sparse](results/sparse.png)
+
+Variants on top of the scheduled design (30 s every 10 min):
+
+- **F1:** a phone that saw nobody in its last window opens a 90 s window next time.
+- **F2:** walking phones also wake every 2 minutes.
+- **F3: "walkers listen, everyone whispers."** Every phone emits a cheap, low-rate connectable Bluetooth beacon (assumed 3 mW). A phone that is walking (accelerometer) keeps scanning while it moves, and exchanges messages with any phone it passes, even one that is asleep.
+
+Hardest setting (250 people, 30 m range); full tables in [`results/sparse.md`](results/sparse.md):
+
+| Variant | Delivered | ≤6 h | Median latency | Alive day 7 | Radio energy (Wh/phone/day) |
+|---|---|---|---|---|---|
+| Always-on (Bitchat-like) | 46% | 27% | 4.7 h | 0% | 0.98 |
+| Scheduled, no fix | 53% | 12% | 15.0 h | 71% | 0.15 |
+| F1: longer window when alone | 53% | 12% | 13.8 h | 64% | 0.26 |
+| F2: walkers wake every 2 min | 52% | 11% | 14.9 h | 69% | 0.17 |
+| **F3: walkers listen, all beacon** | **63%** | **28%** | **7.1 h** | 61% | 0.28 |
+| F1 + F3 | 62% | 28% | 7.0 h | 55% | 0.37 |
+
+### What this shows
+
+1. **F1 and F2 do not help.** Everyone else is asleep outside the shared windows, so waking more on one side alone finds nobody.
+2. **F3 works.** In the sparse setting it halves median latency (15 h → 7 h), raises delivery from 53% to 63%, and matches always-on for delivery within 6 hours (28% vs 27%) — while using ~3.5× less radio energy than always-on and keeping 61% of phones alive on day 7 (always-on: 0%).
+3. **Why it works:** contacts between people who stay put do not change, so a 10-minute rendezvous is enough for them. Contacts change only because people move, so the moving phone pays for discovering them.
+4. **Cost:** more phones die by day 7 than with plain scheduling (61% vs 71%), mostly walkers who scan while moving. In dense, normal settings F3 gives only a small gain (median 3.1 h → 2.6 h).
+5. **Assumption to verify:** that a phone can keep a low-rate connectable beacon running for ~3 mW and be reached by a passing scanner while its app is asleep. This needs real-phone measurements.
+
 ## Model and assumptions
 
 All values are fields of `Config` in [`qcsim.py`](qcsim.py).

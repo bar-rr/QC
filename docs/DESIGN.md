@@ -61,6 +61,13 @@ Saat başı anları **tüm telefonlar için ortaktır.** Pili düşük bir telef
 - Alıcı herhangi bir uyanma anında bir taşıyıcıyla karşılaşınca mesaj teslim edilir. Alındı bilgisi kopyaları sildirir.
 - Tutma süresi günler mertebesinde olur (öneri: 7 gün). Bitchat'teki 24 saat çökmüş sistem için kısa.
 
+### 3.6 Hareket eden dinler, duran fısıldar (seyrek ağ çözümü)
+- Her telefon çok düşük güçlü, bağlanılabilir bir Bluetooth işareti (beacon) yayınlar. Varsayılan maliyet ~3 mW; **ölçülmeli**.
+- Telefon yürüyorsa (ivmeölçer hareket algılarsa) yürüdüğü sürece taramayı açık tutar ve yanından geçtiği her telefonla, o telefon uykudayken bile mesaj alışverişi yapar.
+- Gerekçe: Yerinde duran insanlar arasındaki bağlantılar değişmez; onlara 10 dakikalık randevu yeter. Bağlantıları değiştiren şey hareket olduğu için keşfin enerji bedelini hareket eden telefon öder.
+- Simülasyon (250 kişi, 30 m menzil): ortanca gecikme 15 saatten 7 saate iner, teslim oranı %53'ten %63'e çıkar. Radyo enerjisi sürekli açık moda göre yaklaşık 3,5 kat daha az kalır. Ayrıntı: `sim/README.md`.
+- Denenip işe yaramayanlar: yalnız kalan telefonun penceresini uzatmak ve yürüyenleri daha sık uyandırmak. Diğerleri uykuda olduğu için tek taraflı uyanmak kimseyi bulmuyor.
+
 ## 4. Beklenen kazanç ve bedel
 
 - **Kazanç:** Radyo zamanın yaklaşık %5'inde açık kalır; radyo enerjisi kabaca 20 kat azalır. Kesin rakam gerçek telefonlarda **ölçülmelidir**.
