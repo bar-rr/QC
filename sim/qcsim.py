@@ -73,6 +73,11 @@ class Config:
     # clocks (scheduled mode)
     clock_drift_s_per_day: float = 2.0  # 1-sigma
     gps_frac: float = 0.3  # phones that get a GPS time fix at wake-up
+    # sparse-network fixes (scheduled mode; 0/False = off)
+    lonely_window_s: float = 0.0  # F1: longer window if no neighbour was seen last window
+    moving_period_s: float = 0.0  # F2: walking phones also wake at this shorter period
+    mover_listen: bool = False  # F3: walking phones scan continuously; everyone advertises
+    p_adv_w: float = 0.003  # F3: cost of a low-rate connectable BLE beacon
     name: str = ""
 
 
@@ -150,6 +155,13 @@ def simulate(cfg: Config, seed: int = 0) -> Result:
     drift_sigma = cfg.clock_drift_s_per_day / DAY
     has_gps = rng.random(n) < cfg.gps_frac
     last_sync = np.zeros(n)  # crisis starts with network-synced clocks
+    # sparse-network fix state
+    lonely = np.zeros(n, dtype=bool)
+    seen = np.zeros(n, dtype=bool)
+    had_window = np.zeros(n, dtype=bool)
+    period_on = np.zeros(n, dtype=bool)
+    period_wlen = np.full(n, cfg.window_s)
+    period_wticks = np.ones(n, dtype=int)
 
     # --- messages -------------------------------------------------------------
     src_l, dst_l, created_l, dst_alive_l = [], [], [], []
@@ -204,20 +216,45 @@ def simulate(cfg: Config, seed: int = 0) -> Result:
             radio_j += r.sum()
         else:
             awake = alive & carrier
-            if step % ticks_per_window == 0:
-                widx = step // ticks_per_window
+            phone = alive & ~carrier
+            slot = step % ticks_per_window
+            widx = step // ticks_per_window
+            if slot == 0:
+                # close the previous base window: remember who saw nobody (F1)
+                lonely[had_window] = ~seen[had_window]
+                had_window[:] = False
+                seen[:] = False
                 soc = energy / cfg.battery_j
                 if cfg.battery_aware:
                     mult = np.where(soc > 0.5, 1, np.where(soc > 0.2, 3, 6))
                 else:
                     mult = np.ones(n, dtype=int)
-                wake = alive & ~carrier & (widx % mult == 0)
-                last_sync[wake & has_gps] = t
-                guard = 1.0 + 3 * drift_sigma * (t - last_sync)
-                e = np.where(wake, cfg.p_radio_w * (cfg.window_s + 2 * guard) + cfg.wake_overhead_j, 0.0)
-                drain += e
-                radio_j += e.sum()
-                awake |= wake
+                in_period = phone & (widx % mult == 0)
+                wlen = np.where(lonely & (cfg.lonely_window_s > 0), cfg.lonely_window_s, cfg.window_s)
+                wticks = np.maximum(1, np.round(wlen / dt)).astype(int)
+                period_on[:] = in_period
+                period_wlen[:] = wlen
+                period_wticks[:] = wticks
+            base = period_on & phone & (slot < period_wticks)
+            extra = np.zeros(n, dtype=bool)
+            if cfg.moving_period_s > 0:  # F2
+                mp = max(1, int(round(cfg.moving_period_s / dt)))
+                extra = phone & mv & (step % mp == 0) & ~base
+            starts = (base & (slot == 0)) | extra
+            last_sync[starts & has_gps] = t
+            guard = 1.0 + 3 * drift_sigma * (t - last_sync)
+            e = np.where(base, cfg.p_radio_w * period_wlen / period_wticks, 0.0)
+            e += np.where(extra, cfg.p_radio_w * cfg.window_s, 0.0)
+            e += np.where(starts, cfg.p_radio_w * 2 * guard + cfg.wake_overhead_j, 0.0)
+            had_window |= base
+            awake |= base | extra
+            if cfg.mover_listen:  # F3
+                listen = phone & mv
+                e += np.where(listen & ~(base | extra), cfg.p_radio_w * dt, 0.0)
+                e += np.where(phone, cfg.p_adv_w * dt, 0.0)
+                awake |= listen
+            drain += e
+            radio_j += e.sum()
 
         energy -= drain
         died = alive & (energy <= 0) & ~carrier
@@ -240,21 +277,28 @@ def simulate(cfg: Config, seed: int = 0) -> Result:
             holders[m] = {int(s)}
             carry[s] += 1
 
-        # connectivity among awake phones
-        aw = np.flatnonzero(awake)
+        # connectivity: awake phones link to awake phones in range; with F3,
+        # a listening (walking) phone also links to any living phone's beacon
+        listen = (alive & mobile & (pause_until <= t)) if cfg.mover_listen else np.zeros(n, dtype=bool)
+        cand = np.flatnonzero(alive if cfg.mover_listen else awake)
         comp_of = np.full(n, -1)
         members: dict[int, list[int]] = {}
-        if len(aw) >= 2:
-            pairs = cKDTree(pos[aw]).query_pairs(cfg.ble_range_m, output_type="ndarray")
+        if len(cand) >= 2:
+            pairs = cKDTree(pos[cand]).query_pairs(cfg.ble_range_m, output_type="ndarray")
             if len(pairs):
-                k = len(aw)
+                a, b = cand[pairs[:, 0]], cand[pairs[:, 1]]
+                keep = (awake[a] & awake[b]) | listen[a] | listen[b]
+                pairs = pairs[keep]
+            if len(pairs):
+                k = len(cand)
                 g = coo_matrix((np.ones(len(pairs)), (pairs[:, 0], pairs[:, 1])), shape=(k, k))
                 _, lab = connected_components(g, directed=False)
                 sizes = np.bincount(lab)
                 linked = sizes[lab] >= 2
-                comp_of[aw[linked]] = lab[linked]
-                for node, c in zip(aw[linked], lab[linked]):
+                comp_of[cand[linked]] = lab[linked]
+                for node, c in zip(cand[linked], lab[linked]):
                     members.setdefault(int(c), []).append(int(node))
+                seen[cand[linked]] = True
                 # clocks re-sync when phones meet
                 if cfg.mode == "scheduled":
                     for mem in members.values():
