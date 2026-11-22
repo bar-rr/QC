@@ -44,12 +44,28 @@ QC's approach is **energy-first, scheduled-rendezvous mesh**:
 - **Everyone wakes up together.** Phones keep a shared schedule (phone clock, GPS time when available, corrected peer-to-peer) and turn the radio on only for short, synchronized windows — e.g. ~30 s every 10 minutes. Outside those windows the radio is off.
 - **Messages never go into the void.** A message waits for the next shared window, when nearby phones are known to be awake.
 - **Battery-aware, nested schedule.** As battery drops, a phone wakes less often (every 10 → 30 → 60 min), but the hourly windows are shared by everyone, so no phone falls off the network.
+- **Walkers listen, everyone whispers.** Every phone emits a cheap, low-rate Bluetooth beacon. A phone that is walking keeps scanning while it moves and exchanges messages with every phone it passes, even sleeping ones. People who stay put don't change their contacts; movement does, so the moving phone pays for discovery. This fixes slow delivery in sparse areas.
 - **Volunteer carriers.** Users with a power source (power bank, car battery, solar) can opt in to let their phone stay on as a mailbox that stores and forwards others' encrypted messages.
 - **Multi-day delivery.** Store-and-forward with retention measured in days, not hours.
 
-Trade-off: delivery is not instant — each hop may wait up to one window. In a collapsed system, a message that arrives in 30 minutes beats one that never arrives because the battery died.
+Trade-off: delivery is not instant — each hop may wait up to one window. In a collapsed system, a message that arrives in a few hours beats one that never arrives because the battery died.
 
-This is a design goal, not yet implemented or measured. See [`docs/DESIGN.md`](docs/DESIGN.md) (Turkish) for details.
+### Simulation results
+
+A 7-day collapse simulation (phones, walkers, Bluetooth range, store-and-forward, battery drain, clock drift) compares QC's design with always-on radios. Mean of 3 runs:
+
+| | Normal crowd (500 people, 50 m range) | | | Sparse (250 people, 30 m range) | | |
+|---|---|---|---|---|---|---|
+| | **Delivered** | **Alive day 7** | **Median latency** | **Delivered** | **Alive day 7** | **Median latency** |
+| Always-on (Bitchat-like) | 55% | 0% | 1.8 h | 46% | 0% | 4.7 h |
+| QC: scheduled rendezvous | 67% | 72% | 3.1 h | 53% | 71% | 15 h |
+| QC: scheduled + walkers listen | **68%** | 64% | 2.6 h | **63%** | 61% | 7.1 h |
+
+- With always-on radios, half the phones are dead by day 3 and all by day 5; messages sent after day 4 almost never arrive.
+- QC's design keeps most phones alive for the whole week and delivers more messages overall, using ~3.5–7× less radio energy. The price is a few hours of extra latency.
+- Energy figures are **assumptions, not measurements**; they must be verified on real phones.
+
+Details, assumptions and limitations: [`sim/README.md`](sim/README.md). Design: [`docs/DESIGN.md`](docs/DESIGN.md) (Turkish).
 
 ## Prototype (v0.1)
 
@@ -106,17 +122,18 @@ python -m unittest discover -s tests -v
 - [x] Sealed envelopes (E2E encryption + signatures)
 - [x] LAN transport with automatic discovery
 - [x] Folder / USB transport (sneakernet)
-- [ ] Simulation: scheduled-rendezvous vs always-on (delivery rate, latency, energy)
+- [x] Simulation: scheduled rendezvous vs always-on (delivery, latency, energy)
+- [x] Simulation: sparse-network fixes (walkers listen + beacons)
 - [ ] Android app: Bluetooth LE with synchronized wake windows
 - [ ] Volunteer carrier mode and multi-day store-and-forward
-- [ ] Real-device energy measurements
+- [ ] Real-device measurements: beacon cost, waking a sleeping phone, battery drain
 - [ ] Optional Wi-Fi Aware / Wi-Fi Direct for large data
 - [ ] iOS support (background wake is restricted)
 - [ ] Hybrid post-quantum key exchange (X25519 + ML-KEM)
 
 ## Status
 
-🚧 Early stage — desktop prototype (v0.1) of the encryption and transport layer; the energy-first mesh is in design.
+🚧 Early stage — desktop prototype (v0.1) of the encryption and transport layer; energy-first mesh designed and simulated, not yet on phones.
 
 ## Topics
 
